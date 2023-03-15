@@ -10,6 +10,7 @@ import com.example.restapi.repo.RoleRepo;
 import com.example.restapi.services.EmployeeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,10 +27,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public EmployeeDto addEmployee(EmployeeDto employeeDto) {
         Employee employee = this.modelMapper.map(employeeDto, Employee.class);
+        employee.setPassword(this.passwordEncoder.encode(employeeDto.getPassword()));
         Role role_user = this.roleRepo.findById(AppConstant.ROLE_USER_ID).get();
         employee.getRoles().add(role_user);
         Employee savedEmployee = this.employeeRepo.save(employee);
@@ -45,7 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         //set new value in employee
         employee.setName(employeeDto.getName());
         employee.setEmail(employeeDto.getEmail());
-        employee.setPassword(employeeDto.getPassword());
+        employee.setPassword(this.passwordEncoder.encode(employeeDto.getPassword()));
         employee.setDoj(employeeDto.getDoj());
 
         //update employee

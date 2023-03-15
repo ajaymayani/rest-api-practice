@@ -2,6 +2,7 @@ package com.example.restapi.controllers;
 
 import com.example.restapi.payloads.EmployeeDto;
 import com.example.restapi.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<EmployeeDto> register(@RequestBody EmployeeDto employeeDto) {
+    public ResponseEntity<EmployeeDto> register(@Valid @RequestBody EmployeeDto employeeDto) {
         return new ResponseEntity<>(this.employeeService.addEmployee(employeeDto), HttpStatus.CREATED);
     }
 }
